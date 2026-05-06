@@ -108,6 +108,8 @@ docker compose up
 
 run aplication 
 ```sh
-npm run start:dev orders-service
+npm run start:orders-service
 npm run start:dev inventory-service
+
+
 ``

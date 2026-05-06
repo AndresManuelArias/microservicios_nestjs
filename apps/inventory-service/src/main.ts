@@ -9,7 +9,7 @@ async function bootstrap() {
       transport: Transport.RMQ,
       options: {
         urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
-        queue: 'inventory_queue',
+        queue: process.env.INVENTORY_QUEUE || 'INVENTORY_SERVICE_QUEUE',
         queueOptions: {
           durable: false,
         },
