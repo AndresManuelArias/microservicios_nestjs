@@ -10,9 +10,10 @@ export class InventoryServiceService {
   @EventPattern('order_created')
   async handleOrderCreated(data: { orderId: number; productId: string; quantity: number; totalAmount: number }) {
     // Mock stock validation - assume always available
-    console.log(`Validating stock for order ${data.orderId}, product ${data.productId}, quantity ${data.quantity}`);
+    console.log(`[INVENTORY] Validating stock for order ${data.orderId}, product ${data.productId}, quantity ${data.quantity}`);
 
     // Publish inventory_reserved event
+    console.log(`[INVENTORY] Publishing inventory_reserved event for order ${data.orderId}`);
     this.client.emit('inventory_reserved', {
       orderId: data.orderId,
       productId: data.productId,

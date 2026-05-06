@@ -24,6 +24,12 @@ export class OrdersService {
     const savedOrder = await this.orderRepository.save(order);
 
     // Publish order_created event
+    console.log('Publishing order_created event:', {
+      orderId: savedOrder.id,
+      productId: savedOrder.productId,
+      quantity: savedOrder.quantity,
+      totalAmount: savedOrder.totalAmount,
+    });
     this.client.emit('order_created', {
       orderId: savedOrder.id,
       productId: savedOrder.productId,
@@ -37,7 +43,7 @@ export class OrdersService {
   @EventPattern('payment_processed')
   async handlePaymentProcessed(data: { orderId: number }) {
     await this.updateStatus(data.orderId, OrderStatus.CONFIRMED);
-    console.log(`Order ${data.orderId} confirmed`);
+    console.log(`[ORDERS] Order ${data.orderId} confirmed`);
   }
 
   findAll() {
