@@ -5,7 +5,7 @@ import { EventPattern } from '@nestjs/microservices';
 
 @Injectable()
 export class PaymentsServiceService {
-  constructor(@Inject('PAYMENTS_SERVICE') private client: ClientProxy) {}
+  constructor(@Inject('ORDERS_SERVICE') private client: ClientProxy) {}
 
   @EventPattern('inventory_reserved')
   async handleInventoryReserved(data: { orderId: number; productId: string; quantity: number; totalAmount: number }) {

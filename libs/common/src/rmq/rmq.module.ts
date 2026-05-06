@@ -14,6 +14,9 @@ export class RmqModule {
             options: {
               urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
               queue: `${name}_QUEUE`,
+              queueOptions: {
+                durable: false,
+              },
             },
           },
         ]),

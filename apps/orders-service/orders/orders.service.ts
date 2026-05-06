@@ -13,7 +13,7 @@ export class OrdersService {
   constructor(
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
-    @Inject('ORDERS_SERVICE') private client: ClientProxy,
+    @Inject('INVENTORY_SERVICE') private client: ClientProxy,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {

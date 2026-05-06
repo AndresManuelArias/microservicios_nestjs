@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern, Payload, EventPattern } from '@nestjs/microservices';
 import { InventoryService } from './inventory.service';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
@@ -8,6 +8,11 @@ import { UpdateInventoryDto } from './dto/update-inventory.dto';
 export class InventoryController {
   constructor(private readonly inventoryService: InventoryService) {}
 
+
+  @EventPattern('order_created')
+  async handleOrderCreated(@Payload() data: any) {
+    await this.inventoryService.reserveStock(data);
+  }
   @MessagePattern('createInventory')
   create(@Payload() createInventoryDto: CreateInventoryDto) {
     return this.inventoryService.create(createInventoryDto);

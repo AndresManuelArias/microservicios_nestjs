@@ -8,7 +8,7 @@ import { RmqModule } from '../../../libs/common/src/rmq/rmq.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order]),
-    RmqModule.register({ name: 'ORDERS_SERVICE' }),
+    RmqModule.register({ name: 'INVENTORY_SERVICE' }),
   ],
   controllers: [OrdersController],
   providers: [OrdersService],
