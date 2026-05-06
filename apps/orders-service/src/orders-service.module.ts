@@ -1,9 +1,27 @@
 import { Module } from '@nestjs/common';
 import { OrdersServiceController } from './orders-service.controller';
 import { OrdersServiceService } from './orders-service.service';
+import { OrdersModule } from './orders/orders.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT) || 5432,
+      username: process.env.DB_USERNAME || 'user',
+      password: process.env.DB_PASSWORD || 'password',
+      database: process.env.DB_NAME || 'orders_db',
+      entities: [],
+      synchronize: true, // For development
+    }),
+    OrdersModule,
+  ],
   controllers: [OrdersServiceController],
   providers: [OrdersServiceService],
 })
