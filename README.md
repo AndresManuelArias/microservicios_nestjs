@@ -102,4 +102,12 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 docker 
 
+```sh
 docker compose up
+```
+
+run aplication 
+```sh
+npm run start:dev orders-service
+npm run start:dev inventory-service
+``
