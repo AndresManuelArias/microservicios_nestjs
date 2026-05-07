@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Logger } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -10,6 +10,8 @@ import { OrderStatus } from './entities/order.entity';
 @ApiTags('orders')
 @Controller('orders')
 export class OrdersController {
+  private readonly logger = new Logger(OrdersService.name);
+
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
@@ -60,10 +62,17 @@ export class OrdersController {
     await this.ordersService.updateStatus(data.orderId,OrderStatus.CONFIRMED);
   }
 
-  // Opcional: Manejar el fallo también
+
   @EventPattern('payment_failed')
   async handlePaymentFailed(@Payload() data: { orderId: number, reason: string }) {
     console.log(`[ORDERS] Pago fallido para orden ${data.orderId}: ${data.reason}`);
     await this.ordersService.updateStatus(data.orderId, OrderStatus.CANCELLED);
   }
+
+  @EventPattern('inventory_failed')
+  async handleInventoryFailed(@Payload() data: { orderId: number, reason: string }) {
+    this.logger.log(`[ORDERS] Cancelando orden ${data.orderId} debido a: ${data.reason}`);
+    await this.ordersService.updateStatus(data.orderId, OrderStatus.CANCELLED);
+  }
+  
 }

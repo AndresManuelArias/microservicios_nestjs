@@ -1,4 +1,4 @@
-import { Injectable , ConflictException, InternalServerErrorException, Inject } from '@nestjs/common';
+import { Injectable , ConflictException, InternalServerErrorException, Inject, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order, OrderStatus } from './entities/order.entity';
@@ -9,6 +9,8 @@ import { EventPattern } from '@nestjs/microservices';
 
 @Injectable()
 export class OrdersService {
+  private readonly logger = new Logger(OrdersService.name);
+
   constructor(
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
@@ -65,6 +67,15 @@ export class OrdersService {
   }
 
   async updateStatus(id: number, status: OrderStatus) {
-    await this.orderRepository.update(id, { status });
+    const order = await this.orderRepository.findOneBy({ id });
+    if (!order) {
+      this.logger.error(`Orden ${id} no encontrada para actualizar estado`);
+      return;
+    }
+    
+    order.status = status;
+    await this.orderRepository.save(order);
+    
+    this.logger.log(`[ORDERS] Estado de la orden ${id} cambiado a ${status}`);
   }
 }

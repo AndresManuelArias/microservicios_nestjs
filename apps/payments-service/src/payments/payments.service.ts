@@ -47,6 +47,10 @@ export class PaymentsService {
     }
   }
 
+  async failedOrder(orderId: number) {
+      this.ordersClient.emit('inventory_failed', { orderId, reason: 'Fondos insuficientes' });
+  }
+
   create(createPaymentDto: CreatePaymentDto) {
     return 'This action adds a new payment';
   }
