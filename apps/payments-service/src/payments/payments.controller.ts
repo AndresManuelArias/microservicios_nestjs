@@ -8,7 +8,7 @@ import { UpdatePaymentDto } from './dto/update-payment.dto';
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
-  @EventPattern('inventory_reserved') // Nombre del evento que lanza el Inventory
+  @EventPattern('inventory_reserved')
   async handleInventoryReserved(@Payload() data: any) {
     console.log('[PAYMENTS] Procesando pago para la orden:', data.orderId);
     return await this.paymentsService.processPayment(data);

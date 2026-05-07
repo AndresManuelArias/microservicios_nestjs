@@ -4,6 +4,8 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { Order } from './entities/order.entity';
+import { EventPattern, Payload } from '@nestjs/microservices';
+import { OrderStatus } from './entities/order.entity';
 
 @ApiTags('orders')
 @Controller('orders')
@@ -50,5 +52,18 @@ export class OrdersController {
   @ApiResponse({ status: 404, description: 'Order not found' })
   remove(@Param('id') id: string) {
     return this.ordersService.remove(+id);
+  }
+  @EventPattern('payment_processed')
+  async handlePaymentProcessed(@Payload() data: { orderId: number }) {
+    console.log(`[ORDERS] Recibida confirmación de pago para orden: ${data.orderId}`);
+
+    await this.ordersService.updateStatus(data.orderId,OrderStatus.CONFIRMED);
+  }
+
+  // Opcional: Manejar el fallo también
+  @EventPattern('payment_failed')
+  async handlePaymentFailed(@Payload() data: { orderId: number, reason: string }) {
+    console.log(`[ORDERS] Pago fallido para orden ${data.orderId}: ${data.reason}`);
+    await this.ordersService.updateStatus(data.orderId, OrderStatus.CANCELLED);
   }
 }

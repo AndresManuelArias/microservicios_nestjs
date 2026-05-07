@@ -27,7 +27,7 @@ import { Payment } from './entities/payment.entity';
           urls: ['amqp://localhost:5672'],
           queue: 'ORDERS_SERVICE_QUEUE',
           queueOptions: {
-            durable: true,
+            durable: false,
           },
         },
       },

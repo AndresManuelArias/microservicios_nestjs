@@ -16,11 +16,11 @@ export class PaymentsService {
   ) {}
 
   async processPayment(data: any) {
-    // Aseguramos que orderId sea un número si viene como string
+
     const orderId = Number(data.orderId);
     const totalAmount = data.totalAmount;
 
-    // 1. IDEMPOTENCIA
+
     const existingPayment = await this.paymentRepo.findOneBy({ orderId });
     if (existingPayment) {
       console.log(`[PAYMENTS] Pago ya procesado para la orden ${orderId}. Ignorando.`);
@@ -32,17 +32,17 @@ export class PaymentsService {
     const paymentSuccessful = true; 
 
     if (paymentSuccessful) {
-      // Guardamos registro
+
       await this.paymentRepo.save({ 
         orderId, 
         amount: totalAmount, 
         status: 'SUCCESS' 
       });
 
-      // Notificamos éxito
+
       this.ordersClient.emit('payment_processed', { orderId });
     } else {
-      // Notificamos fallo
+
       this.ordersClient.emit('payment_failed', { orderId, reason: 'Fondos insuficientes' });
     }
   }

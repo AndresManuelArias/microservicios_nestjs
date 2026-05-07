@@ -46,7 +46,7 @@ export class InventoryServiceService {
     });
   }
 
-   async create(createInventoryDto: CreateInventoryDto): Promise<Inventory> {
+  async create(createInventoryDto: CreateInventoryDto): Promise<Inventory> {
     const newItem = this.inventoryRepository.create(createInventoryDto);
     return await this.inventoryRepository.save(newItem);
   }
