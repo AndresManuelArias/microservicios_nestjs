@@ -1,6 +1,5 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { EventPattern } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inventory } from '../entities/inventory.entity';
 import { Repository } from 'typeorm';
@@ -15,18 +14,7 @@ export class InventoryServiceService {
     private readonly inventoryRepository: Repository<Inventory>,
     @Inject('PAYMENTS_SERVICE') private client: ClientProxy) {}
 
-  @EventPattern('order_created')
-  async handleOrderCreated(data: { orderId: number; productId: string; quantity: number; totalAmount: number }) {
-    console.log(`[INVENTORY] Validating stock for order ${data.orderId}, product ${data.productId}, quantity ${data.quantity}`);
 
-    console.log(`[INVENTORY] Publishing inventory_reserved event for order ${data.orderId}`);
-    this.client.emit('inventory_reserved', {
-      orderId: data.orderId,
-      productId: data.productId,
-      quantity: data.quantity,
-      totalAmount: data.totalAmount,
-    });
-  }
 
   async reserveStock(orderData: any) {
     const { productId, quantity, orderId } = orderData;

@@ -111,5 +111,8 @@ run aplication
 npm run start:orders-service
 npm run start:dev inventory-service
 
+npm run start:dev payments
+
+
 
 ``
