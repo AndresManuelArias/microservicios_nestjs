@@ -106,6 +106,11 @@ docker
 docker compose up
 ```
 
+run all
+```sh
+npm run start:dev
+``
+
 run aplication 
 ```sh
 npm run start:orders-service
