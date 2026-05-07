@@ -120,11 +120,11 @@ npm run start:dev payments-service
 
 
 
-``
+``` 
 
 
 entrar a la base de datos
 
 ```sh
 docker exec -it distributed-orders-postgres-1 psql -U user -d orders_db
-``
+```
