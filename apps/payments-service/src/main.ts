@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
-import { PaymentsServiceModule } from './payments-service.module';
+import { PaymentsModule } from  './payments/payments.module';
 
 async function bootstrap() {
 const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    PaymentsServiceModule,
+    PaymentsModule,
     {
       transport: Transport.RMQ,
       options: {

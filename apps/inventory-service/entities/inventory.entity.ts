@@ -5,7 +5,7 @@ export class Inventory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({unique: true})
   productId: string;
 
   @Column('int')

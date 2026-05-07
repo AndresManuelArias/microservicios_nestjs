@@ -1,4 +1,4 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
+import { Injectable, Logger, Inject, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inventory } from '../entities/inventory.entity';
@@ -47,7 +47,20 @@ export class InventoryServiceService {
   }
 
   async create(createInventoryDto: CreateInventoryDto): Promise<Inventory> {
-    const newItem = this.inventoryRepository.create(createInventoryDto);
-    return await this.inventoryRepository.save(newItem);
+    try{
+
+      const newItem = this.inventoryRepository.create(createInventoryDto);
+      return await this.inventoryRepository.save(newItem);
+  
+
+    } catch (error:any) {
+
+      if (error.code === '23505') {
+        throw new ConflictException(
+          `La orden con el producto ${createInventoryDto.productId} ya existe.`
+        );
+      }
+      throw new InternalServerErrorException('Error al crear la orden en la base de datos');
+    }
   }
 }
