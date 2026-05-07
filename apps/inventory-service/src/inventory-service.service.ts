@@ -32,7 +32,7 @@ export class InventoryServiceService {
     });
   }
 
-    async reserveStock(orderData: any) {
+  async reserveStock(orderData: any) {
     const { productId, quantity, orderId } = orderData;
 
     this.logger.log(`Intentando reservar ${quantity} unidades para el producto ${productId}`);
