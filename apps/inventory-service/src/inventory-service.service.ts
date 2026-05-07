@@ -94,4 +94,8 @@ export class InventoryServiceService {
     await this.inventoryRepository.update({ productId: inventory.productId }, { price: priceUnit });
     this.logger.log(`Precio unitario actualizado con éxito para el producto ${inventory.productId} a ${priceUnit}`);
   }
+  async findOne(id: number) {
+    this.logger.log(`Obteniendo item del inventario con id ${id}`);
+    return await this.inventoryRepository.findOneBy({ id });    
+  }
 }

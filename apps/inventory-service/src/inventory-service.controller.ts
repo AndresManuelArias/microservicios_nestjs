@@ -1,4 +1,4 @@
-import { Controller,Post, Body, Get, Logger, Put } from '@nestjs/common';
+import { Controller,Post, Body, Get, Logger, Put, Param } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MessagePattern, Payload, EventPattern } from '@nestjs/microservices';
 
@@ -7,6 +7,7 @@ import { CreateInventoryDto } from '../dto/create-inventory.dto';
 import { CreateOrderDto,GenerateOrderDto } from '@app/common';
 import { Inventory } from '../entities/inventory.entity';
 import { UpdateInventoryDto } from '../dto/update-inventory.dto';
+
 
 
 @Controller('inventory')
@@ -63,6 +64,21 @@ export class InventoryServiceController {
   async updateUnitPrice(@Body() inventory: UpdateInventoryDto) {
     this.logger.log(`[INVENTORY] Updating unit price for product ${inventory.productId} to ${inventory.price}`);
     return await this.inventoryServiceService.updateUnitPrice(inventory);
+  }
+
+  @Get('/:id')
+  @ApiOperation({ summary: 'Obtener un item del inventario por ID' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Item del inventario obtenido exitosamente.' 
+  })
+  @ApiResponse({ 
+    status: 404, 
+    description: 'Item del inventario no encontrado.' 
+  })
+  async findOne( @Param('id') id: number) {
+    this.logger.log(`[INVENTORY] Fetching inventory item with id ${id}`);
+    return await this.inventoryServiceService.findOne(id);
   }
 
 }
