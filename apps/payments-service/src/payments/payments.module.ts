@@ -5,14 +5,17 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
+
     ClientsModule.register([
       {
-        name: 'PAYMENTS_SERVICE',
+        name: 'ORDERS_SERVICE',
         transport: Transport.RMQ,
         options: {
           urls: ['amqp://localhost:5672'],
-          queue: 'PAYMENTS_SERVICE_QUEUE',
-          queueOptions: { durable: true },
+          queue: 'ORDERS_SERVICE_QUEUE',
+          queueOptions: {
+            durable: true,
+          },
         },
       },
     ]),
