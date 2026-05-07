@@ -2,6 +2,14 @@ import { IsString, IsNumber, IsPositive } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOrderDto {
+
+  @ApiProperty({
+    description: 'The unique identifier of the order of the client',
+    example: 'order-123',
+  })
+
+  @IsString()
+  orderId: string;
   @ApiProperty({
     description: 'The unique identifier of the product',
     example: 'prod-123',

@@ -17,10 +17,19 @@ export class Order {
   id: number;
 
   @ApiProperty({
+    description: 'The unique identifier of the order of the client',
+    example: 'order-123',
+  })
+  @Column({ unique: true })
+  @Column()
+  orderId: string;
+
+
+  @ApiProperty({
     description: 'The unique identifier of the product',
     example: 'prod-123',
   })
-  @Column({ unique: true })
+
   @Column()
   productId: string;
 
@@ -31,11 +40,15 @@ export class Order {
   @Column()
   quantity: number;
 
-  @ApiProperty({
-    description: 'The total amount of the order',
-    example: 100.50,
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseFloat(value),
+    },
   })
-  @Column()
   totalAmount: number;
 
   @ApiProperty({
