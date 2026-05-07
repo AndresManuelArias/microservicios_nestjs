@@ -20,6 +20,7 @@ export class Order {
     description: 'The unique identifier of the product',
     example: 'prod-123',
   })
+  @Column({ unique: true })
   @Column()
   productId: string;
 

@@ -19,7 +19,7 @@ import { Order } from '../orders/entities/order.entity';
       password: process.env.DB_PASSWORD || 'password',
       database: process.env.DB_NAME || 'orders_db',
       entities: [Order],
-      synchronize: true, // For development
+      synchronize: true,
     }),
     OrdersModule,
   ],
