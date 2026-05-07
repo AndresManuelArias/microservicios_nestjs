@@ -1,28 +1,52 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm'; // <--- Importación corregida
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { Payment } from './entities/payment.entity';
 
 @Injectable()
 export class PaymentsService {
   constructor(
-    @Inject('ORDERS_SERVICE') private readonly ordersClient: ClientProxy,
+    @InjectRepository(Payment) 
+    private readonly paymentRepo: Repository<Payment>,
+    @Inject('ORDERS_SERVICE') 
+    private readonly ordersClient: ClientProxy,
   ) {}
 
   async processPayment(data: any) {
-    const { orderId, totalAmount } = data;
+    // Aseguramos que orderId sea un número si viene como string
+    const orderId = Number(data.orderId);
+    const totalAmount = data.totalAmount;
+
+    // 1. IDEMPOTENCIA
+    const existingPayment = await this.paymentRepo.findOneBy({ orderId });
+    if (existingPayment) {
+      console.log(`[PAYMENTS] Pago ya procesado para la orden ${orderId}. Ignorando.`);
+      return;
+    }
+
+    console.log(`[PAYMENTS] Procesando cobro de $${totalAmount} para orden ${orderId}...`);
     
-    console.log(`[PAYMENTS] Procesando pago de $${totalAmount} para orden ${orderId}...`);
+    const paymentSuccessful = true; 
 
+    if (paymentSuccessful) {
+      // Guardamos registro
+      await this.paymentRepo.save({ 
+        orderId, 
+        amount: totalAmount, 
+        status: 'SUCCESS' 
+      });
 
-    const isSuccess = true; 
-
-    if (isSuccess) {
-      this.ordersClient.emit('payment_processed', { orderId, status: 'SUCCESS' });
+      // Notificamos éxito
+      this.ordersClient.emit('payment_processed', { orderId });
     } else {
-      this.ordersClient.emit('payment_failed', { orderId, status: 'FAILED' });
+      // Notificamos fallo
+      this.ordersClient.emit('payment_failed', { orderId, reason: 'Fondos insuficientes' });
     }
   }
+
   create(createPaymentDto: CreatePaymentDto) {
     return 'This action adds a new payment';
   }
