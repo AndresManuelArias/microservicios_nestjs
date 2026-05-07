@@ -4,6 +4,7 @@ import { EventPattern } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inventory } from '../entities/inventory.entity';
 import { Repository } from 'typeorm';
+import { CreateInventoryDto } from '../dto/create-inventory.dto';
 
 
 
@@ -60,5 +61,10 @@ export class InventoryServiceService {
       ...orderData,
       status: 'STOCK_RESERVED',
     });
+  }
+
+   async create(createInventoryDto: CreateInventoryDto): Promise<Inventory> {
+    const newItem = this.inventoryRepository.create(createInventoryDto);
+    return await this.inventoryRepository.save(newItem);
   }
 }
