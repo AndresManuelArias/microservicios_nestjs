@@ -6,7 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(OrdersServiceModule);
 
-  // Swagger setup
+
   const config = new DocumentBuilder()
     .setTitle('Orders Service API')
     .setDescription('API for managing orders in the distributed orders system')

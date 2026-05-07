@@ -1,10 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { InventoryServiceModule } from './inventory-service.module';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(InventoryServiceModule); 
   
+  const config = new DocumentBuilder()
+    .setTitle('Inventory Service API')
+    .setDescription('API for managing inventory in the distributed orders system')
+    .setVersion('1.0')
+    .addTag('inventory', 'Inventory management endpoints')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   app.connectMicroservice<MicroserviceOptions>({
       transport: Transport.RMQ,
       options: {

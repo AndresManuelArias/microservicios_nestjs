@@ -1,7 +1,10 @@
 import { Controller,Post, Body } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MessagePattern, Payload, EventPattern } from '@nestjs/microservices';
 
 import { InventoryServiceService } from './inventory-service.service';
+import { CreateInventoryDto } from '../dto/create-inventory.dto';
+
 
 @Controller('inventory')
 export class InventoryServiceController {
@@ -12,7 +15,16 @@ export class InventoryServiceController {
     await this.inventoryServiceService.reserveStock(data);
   }
   @Post()
-  async createRest(@Body() data: any) {
+  @ApiOperation({ summary: 'Crear un nuevo item en el inventario' })
+  @ApiResponse({ 
+    status: 201, 
+    description: 'El item ha sido creado exitosamente.' 
+  })
+  @ApiResponse({ 
+    status: 400, 
+    description: 'Datos de entrada inválidos.' 
+  })
+  async createRest(@Body() data: CreateInventoryDto) {
     return await this.inventoryServiceService.create(data);
   }
 }
