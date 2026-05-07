@@ -1,7 +1,7 @@
 import { IsString, IsNumber, IsPositive } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateOrderDto {
+export class GenerateOrderDto {
 
   @ApiProperty({
     description: 'The unique identifier of the order of the client',
@@ -34,4 +34,8 @@ export class CreateOrderDto {
   @IsNumber()
   @IsPositive()
   totalAmount: number;
+
+  @IsNumber()
+  @IsPositive()
+  priceUnit:number
 }

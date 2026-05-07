@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { OrdersServiceController } from './orders-service.controller';
-import { OrdersServiceService } from './orders-service.service';
 import { OrdersModule } from '../orders/orders.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
@@ -8,6 +6,7 @@ import { Order } from '../orders/entities/order.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([Order]),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -23,7 +22,6 @@ import { Order } from '../orders/entities/order.entity';
     }),
     OrdersModule,
   ],
-  controllers: [OrdersServiceController],
-  providers: [OrdersServiceService],
+
 })
 export class OrdersServiceModule {}

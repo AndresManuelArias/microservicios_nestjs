@@ -17,4 +17,13 @@ export class CreateInventoryDto {
   @IsNumber()
   @Min(0)
   stock: number;
+
+  @ApiProperty({ 
+    example: 10.99, 
+    description: 'Precio unitario del producto',
+    minimum: 0 
+  })
+  @IsNumber()
+  @Min(0)
+  price: number;
 }

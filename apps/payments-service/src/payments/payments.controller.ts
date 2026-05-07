@@ -15,30 +15,8 @@ export class PaymentsController {
     console.log('[PAYMENTS] Procesando pago para la orden:', data.orderId);
     return await this.paymentsService.processPayment(data);
   }
-  @MessagePattern('createPayment')
-  create(@Payload() createPaymentDto: CreatePaymentDto) {
-    return this.paymentsService.create(createPaymentDto);
-  }
+ 
 
-  @MessagePattern('findAllPayments')
-  findAll() {
-    return this.paymentsService.findAll();
-  }
-
-  @MessagePattern('findOnePayment')
-  findOne(@Payload() id: number) {
-    return this.paymentsService.findOne(id);
-  }
-
-  @MessagePattern('updatePayment')
-  update(@Payload() updatePaymentDto: UpdatePaymentDto) {
-    return this.paymentsService.update(updatePaymentDto.id, updatePaymentDto);
-  }
-
-  @MessagePattern('removePayment')
-  remove(@Payload() id: number) {
-    return this.paymentsService.remove(id);
-  }
 
   @EventPattern('inventory_failed')
   async handleInventoryFailed(@Payload() data: { orderId: number, reason: string }) {

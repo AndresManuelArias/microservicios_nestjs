@@ -2,8 +2,7 @@ import { Injectable , ConflictException, InternalServerErrorException, Inject, L
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order, OrderStatus } from './entities/order.entity';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { CreateOrderDto, UpdateOrderDto } from '@app/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { EventPattern } from '@nestjs/microservices';
 
@@ -58,13 +57,7 @@ export class OrdersService {
     return this.orderRepository.findOneBy({ id });
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return this.orderRepository.update(id, updateOrderDto);
-  }
 
-  remove(id: number) {
-    return this.orderRepository.delete(id);
-  }
 
   async updateStatus(id: number, status: OrderStatus) {
     const order = await this.orderRepository.findOneBy({ id });
@@ -76,6 +69,11 @@ export class OrdersService {
     order.status = status;
     await this.orderRepository.save(order);
     
+    if(status === OrderStatus.CANCELLED) {
+      const {productId, quantity} = order;
+      this.logger.log(`[ORDERS] Emitiendo evento de cancelación para orden ${id} y producto ${productId}`);
+      this.client.emit('order_cancelled', { productId, quantity });
+    }
     this.logger.log(`[ORDERS] Estado de la orden ${id} cambiado a ${status}`);
   }
 }

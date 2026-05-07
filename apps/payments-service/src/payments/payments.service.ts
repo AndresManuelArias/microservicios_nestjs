@@ -2,9 +2,9 @@ import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm'; // <--- Importación corregida
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
+
 import { Payment } from './entities/payment.entity';
+import { GenerateOrderDto } from '@app/common';
 
 @Injectable()
 export class PaymentsService {
@@ -15,11 +15,12 @@ export class PaymentsService {
     private readonly ordersClient: ClientProxy,
   ) {}
 
-  async processPayment(data: any) {
+  async processPayment(data: GenerateOrderDto) {
 
     const orderId = Number(data.orderId);
     const totalAmount = data.totalAmount;
-
+    const priceUnit = data.priceUnit;
+    const quantity = data.quantity;
 
     const existingPayment = await this.paymentRepo.findOneBy({ orderId });
     if (existingPayment) {
@@ -29,7 +30,10 @@ export class PaymentsService {
 
     console.log(`[PAYMENTS] Procesando cobro de $${totalAmount} para orden ${orderId}...`);
     
-    const paymentSuccessful = true; 
+    let paymentSuccessful = true; 
+    if( totalAmount < priceUnit*quantity){
+       paymentSuccessful = false; 
+    }
 
     if (paymentSuccessful) {
 
@@ -38,8 +42,7 @@ export class PaymentsService {
         amount: totalAmount, 
         status: 'SUCCESS' 
       });
-
-
+      
       this.ordersClient.emit('payment_processed', { orderId });
     } else {
 
@@ -48,26 +51,8 @@ export class PaymentsService {
   }
 
   async failedOrder(orderId: number) {
-      this.ordersClient.emit('inventory_failed', { orderId, reason: 'Fondos insuficientes' });
+    this.ordersClient.emit('inventory_failed', { orderId, reason: 'Inventario insuficientes' });
   }
 
-  create(createPaymentDto: CreatePaymentDto) {
-    return 'This action adds a new payment';
-  }
 
-  findAll() {
-    return `This action returns all payments`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} payment`;
-  }
-
-  update(id: number, updatePaymentDto: UpdatePaymentDto) {
-    return `This action updates a #${id} payment`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} payment`;
-  }
 }

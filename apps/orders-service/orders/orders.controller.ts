@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Logger } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { CreateOrderDto, UpdateOrderDto } from '@app/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { Order } from './entities/order.entity';
 import { EventPattern, Payload } from '@nestjs/microservices';
@@ -38,23 +37,7 @@ export class OrdersController {
     return this.ordersService.findOne(+id);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update order', description: 'Updates an existing order' })
-  @ApiParam({ name: 'id', description: 'Order ID', type: Number })
-  @ApiResponse({ status: 200, description: 'Order updated successfully' })
-  @ApiResponse({ status: 404, description: 'Order not found' })
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(+id, updateOrderDto);
-  }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete order', description: 'Deletes an order by ID' })
-  @ApiParam({ name: 'id', description: 'Order ID', type: Number })
-  @ApiResponse({ status: 200, description: 'Order deleted successfully' })
-  @ApiResponse({ status: 404, description: 'Order not found' })
-  remove(@Param('id') id: string) {
-    return this.ordersService.remove(+id);
-  }
   @EventPattern('payment_processed')
   async handlePaymentProcessed(@Payload() data: { orderId: number }) {
     console.log(`[ORDERS] Recibida confirmación de pago para orden: ${data.orderId}`);
@@ -72,7 +55,7 @@ export class OrdersController {
   @EventPattern('inventory_failed')
   async handleInventoryFailed(@Payload() data: { orderId: number, reason: string }) {
     this.logger.log(`[ORDERS] Cancelando orden ${data.orderId} debido a: ${data.reason}`);
-    await this.ordersService.updateStatus(data.orderId, OrderStatus.CANCELLED);
+    await this.ordersService.updateStatus(data.orderId, OrderStatus.INVENTORY_FAILED);
   }
   
 }
