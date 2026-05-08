@@ -75,7 +75,9 @@ npm run test:cov
 * **NestJS**: Framework de backend modular y escalable para Node.js.
 * **RabbitMQ**: Message Broker basado en el protocolo AMQP para la comunicación asíncrona entre microservicios.
 * **TypeORM**: ORM potente para el mapeo de datos y gestión de la base de datos **PostgreSQL**.
-* **Swagger**: Documentación interactiva de la API (disponible en: `http://localhost:3000/api`).
+* **Swagger**: Documentación interactiva de la API crear orden (disponible en: `http://localhost:3001/api`)
+agregar inventario orden (disponible en: `http://localhost:3002api`)
+.
 
 
 ## 📊 Arquitectura y Flujo (Saga Pattern)
