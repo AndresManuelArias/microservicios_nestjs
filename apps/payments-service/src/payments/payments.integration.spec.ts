@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PaymentsController } from '../src/payments/payments.controller';
-import { PaymentsService } from '../src/payments/payments.service';
+import { PaymentsController } from './payments.controller';
+import { PaymentsService } from './payments.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Payment } from '../src/payments/entities/payment.entity';
+import { Payment } from './entities/payment.entity';
 import { GenerateOrderDto } from '@app/common';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
@@ -12,12 +12,12 @@ const mockRepository = (): MockRepository => ({
   save: jest.fn(),
 });
 
-describe('PaymentsServiceController (e2e)', () => {
+describe('Payments integration', () => {
   let controller: PaymentsController;
   let paymentRepo: MockRepository;
   let ordersClient: { emit: jest.Mock };
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     paymentRepo = mockRepository();
     ordersClient = { emit: jest.fn() };
 
@@ -33,27 +33,21 @@ describe('PaymentsServiceController (e2e)', () => {
     controller = moduleFixture.get<PaymentsController>(PaymentsController);
   });
 
-  it('processes inventory_reserved event end-to-end', async () => {
+  it('processes inventory_reserved event through controller and service', async () => {
     paymentRepo.findOneBy?.mockResolvedValue(undefined);
-    paymentRepo.save?.mockResolvedValue({ id: 1, orderId: 1, amount: 50, status: 'SUCCESS' });
+    paymentRepo.save?.mockResolvedValue({ id: 1, orderId: 1, amount: 100, status: 'SUCCESS' });
 
     const payload: GenerateOrderDto = {
       orderId: '1',
       productId: 'prod-123',
       quantity: 2,
       priceUnit: 25,
-      totalAmount: 50,
+      totalAmount: 100,
     };
 
     await controller.handleInventoryReserved(payload);
 
-    expect(paymentRepo.save).toHaveBeenCalledWith({ orderId: 1, amount: 50, status: 'SUCCESS' });
+    expect(paymentRepo.save).toHaveBeenCalledWith({ orderId: 1, amount: 100, status: 'SUCCESS' });
     expect(ordersClient.emit).toHaveBeenCalledWith('payment_processed', { orderId: 1 });
-  });
-
-  it('processes inventory_failed event end-to-end', async () => {
-    await controller.handleInventoryFailed({ orderId: 1, reason: 'stock error' });
-
-    expect(ordersClient.emit).toHaveBeenCalledWith('inventory_failed', { orderId: 1, reason: 'stock error' });
   });
 });

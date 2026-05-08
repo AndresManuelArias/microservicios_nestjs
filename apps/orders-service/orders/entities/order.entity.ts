@@ -15,16 +15,14 @@ export class Order {
     example: 1,
   })
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @ApiProperty({
     description: 'The unique identifier of the order of the client',
     example: 'order-123',
   })
   @Column({ unique: true })
-  @Column()
-  orderId: string;
-
+  orderId!: string;
 
   @ApiProperty({
     description: 'The unique identifier of the product',
@@ -32,14 +30,14 @@ export class Order {
   })
 
   @Column()
-  productId: string;
+  productId!: string;
 
   @ApiProperty({
     description: 'The quantity of the product ordered',
     example: 2,
   })
   @Column()
-  quantity: number;
+  quantity!: number;
 
   @Column({
     type: 'decimal',
@@ -50,7 +48,7 @@ export class Order {
       from: (value: string) => parseFloat(value),
     },
   })
-  totalAmount: number;
+  totalAmount!: number;
 
   @ApiProperty({
     description: 'The current status of the order',
@@ -62,5 +60,5 @@ export class Order {
     enum: OrderStatus,
     default: OrderStatus.PENDING,
   })
-  status: OrderStatus;
+  status!: OrderStatus;
 }

@@ -19,7 +19,16 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/distributed-orders/test/jest-e2e.json"
+    "test:unit:orders-service": "jest apps/orders-service/orders/orders.controller.spec.ts apps/orders-service/orders/orders.service.spec.ts",
+    "test:integration:orders-service": "jest apps/orders-service/orders/orders.integration.spec.ts",
+    "test:e2e:orders-service": "jest apps/orders-service/test/app.e2e.spec.ts",
+    "test:unit:payments-service": "jest apps/payments-service/src/payments/payments.controller.spec.ts apps/payments-service/src/payments/payments.service.spec.ts",
+    "test:integration:payments-service": "jest apps/payments-service/src/payments/payments.integration.spec.ts",
+    "test:e2e:payments-service": "jest apps/payments-service/test/app.e2e-spec.ts",
+    "test:unit:inventory-service": "jest apps/inventory-service/src/inventory-service.controller.spec.ts apps/inventory-service/src/inventory-service.service.spec.ts",
+    "test:integration:inventory-service": "jest apps/inventory-service/src/inventory-service.integration.spec.ts",
+    "test:e2e:inventory-service": "jest apps/inventory-service/test/app.e2e-spec.ts",
+    "test:e2e": "jest apps/orders-service/test/app.e2e.spec.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
